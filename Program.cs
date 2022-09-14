@@ -26,7 +26,6 @@ int CheckIntInput(string Message)
 string[] FindInArray(string[] ArgInput, int ArgLenght)
 {
     string[] Buffer=new string[0];
-    string[] Result=new string[0];
     int BufferDeep=0;
     for (int i = 0; i < ArgInput.Count(); i++)
     {
@@ -34,37 +33,29 @@ string[] FindInArray(string[] ArgInput, int ArgLenght)
         {
             BufferDeep++;
             System.Array.Resize(ref Buffer, BufferDeep); //увеличение размера массива
-            Buffer[BufferDeep]=ArgInput[i];
+            Buffer[BufferDeep-1]=ArgInput[i];
         }
     }
-    if (Buffer.Count()>1) 
-    {
-        Result=new string[BufferDeep-1];
-        for (int i = 0; i < BufferDeep-1; i++)
-        {
-            Result[i]=Buffer[i+1];
-        }
-    }
-    return Result;
+    return Buffer;
 }
 
 //метод вывода массива на экран
 void PrintStringArray<T>(T[] ArgInput)
 {
-    if (ArgInput.Count!=0)
+    if (ArgInput.Count()!=0)
     {
         Console.Write("{");
-        for (int i = 0; i < ArgInput.Count; i++)
+        for (int i = 0; i < ArgInput.GetLength(0); i++)
         {
-           Console.Write($" {Convert.ToString(Arginput[i])}"); 
+           Console.Write($"{Convert.ToString(ArgInput[i])} "); 
         }
         Console.WriteLine("}");
     }
 }
 string[] MonkeyArray=new string[6]{"M", "Mo", "Mon", "Monk", "Monke", "Monkey"}; //исходный массив, заготовленный
 string[] UserArray;    //исходный массив, вводимый пользователем
-string[] ResultArray;  //результирующий массив
-int ConditionLenght; //нужная длина для поиска
+int UserArrayLenght;   //длина исходного массива, вводимого пользователем
+int ConditionLenght;   //нужная длина для поиска
 ConsoleKeyInfo choise; //переменная ввода клавиши
 
 Console.Clear();
@@ -74,6 +65,8 @@ choise=Console.ReadKey();
 while (choise.Key!=ConsoleKey.Q)
 {
     ConditionLenght=0;
+    UserArrayLenght=0;
+    string[] ResultArray=new string[0];  //результирующий массив
     Console.Clear();
     if (choise.Key==ConsoleKey.D1 || choise.Key==ConsoleKey.D2) //пользователь сделал выбор
     {
@@ -89,25 +82,44 @@ while (choise.Key!=ConsoleKey.Q)
             {
                 ConditionLenght=CheckIntInput("Введите количество знаков в строке для поиска в массиве");
             }
-            ResultArray=new string[]; //чистка массива
             ResultArray=FindInArray(MonkeyArray,ConditionLenght);
         } 
         if (choise.Key==ConsoleKey.D2) //используем подготовленный массив
         {
             //исходный массив
-            Console.WriteLine("Исходный массив строк: ");
-            PrintStringArray(MonkeyArray);
-
+           //запрос длины для поиска
+            while (UserArrayLenght<=0)
+            {
+                UserArrayLenght=CheckIntInput("Какой длины будет ваш массив строк");
+            }
+            UserArray=new string[UserArrayLenght];
+            Console.Clear();
+            for (int i = 0; (i < UserArrayLenght); i++)
+            {
+                Console.Write($"Введите {i+1}/{UserArrayLenght} элемент:");
+                UserArray[i]=Console.ReadLine();
+            }
+            //исходный массив
+            Console.Clear();
+            Console.WriteLine("Ваш массив строк: ");
+            PrintStringArray(UserArray);
             //запрос длины для поиска
             while (ConditionLenght<=0)
             {
                 ConditionLenght=CheckIntInput("Введите количество знаков в строке для поиска в массиве");
             }
-            ResultArray=new string[]; //чистка массива
-            ResultArray=FindInArray(MonkeyArray,ConditionLenght);
+            ResultArray=FindInArray(UserArray,ConditionLenght);
         } 
     }
-    
+    if (ResultArray.Count()!=0)
+    { 
+        Console.WriteLine("Результирующий массив: ");
+    }
+    else 
+    {
+        Console.WriteLine("Строки заданной длины в массиве не найдены");
+    }
+    PrintStringArray(ResultArray);
     Console.WriteLine("Для 1- выбрать подготовленный массив, 2- ввести массив самостоятельно, Q - завершить работу программы");
     choise=Console.ReadKey();
 
