@@ -97,7 +97,7 @@ while (choise.Key!=ConsoleKey.Q)
             for (int i = 0; (i < UserArrayLenght); i++)
             {
                 Console.Write($"Введите {i+1}/{UserArrayLenght} элемент:");
-                UserArray[i]=Console.ReadLine();
+                UserArray[i]=$"{Console.ReadLine()}";
             }
             //исходный массив
             Console.Clear();
